@@ -1,0 +1,12 @@
+{
+  "name": "com.maskmapgenerator",
+  "displayName": "Mask Map Generator",
+  "version": "0.0.0",
+  "unity": "6000.0",
+  "description": "Mask map generator.",
+  "author": {
+    "name": "um_stretch",
+  },
+  "changelogUrl": "https://github.com/um-stretch/Unity-MaskMapGenerator",
+  "dependencies": {}
+}
