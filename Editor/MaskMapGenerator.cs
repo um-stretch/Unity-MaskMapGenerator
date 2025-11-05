@@ -6,10 +6,9 @@ public class MaskMapGenerator : EditorWindow
     private static MaskMapGenerator window;
     private static Vector2 _minWindowSize = new Vector2(315, 420);
 
-    private static Texture2D _metallicTexture;
-    private static Texture2D _aoTexture;
-    private static Texture2D _detailMaskTexture;
-    private static Texture2D _smoothnessTexture;
+    // Metallic, AO, Detail, Smoothness
+    private static Texture2D[] _inputTextures = new Texture2D[4];
+    private static float[] _fallbackValues = new float [4];
 
     private static string _textureName = "NewMaskMap";
     private static string _generationLocation = "Assets/";
@@ -24,20 +23,19 @@ public class MaskMapGenerator : EditorWindow
         window.maxSize = Vector3.one * 10000;
     }
 
-    static float value;
     void OnGUI()
     {
         window ??= GetWindow<MaskMapGenerator>("Mask Map Generator");
 
         // Textures
-        TextureField("Metallic", ref _metallicTexture);
-        TextureField("Ambient Occlusion", ref _aoTexture);
-        TextureField("Detail Mask", ref _detailMaskTexture);
-        TextureField("Smoothness", ref _smoothnessTexture);
+        DrawTextureField("Metallic", 0);
+        DrawTextureField("Ambient Occlusion", 1);
+        DrawTextureField("Detail Mask", 2);
+        DrawTextureField("Smoothness", 3);
 
         // Name
         GUILayout.FlexibleSpace();
-        GUILayout.Label(new GUIContent("Name"), EditorStyles.boldLabel);
+        GUILayout.Label(new GUIContent("Name"), EditorStyles.boldLabel); 
         _textureName = EditorGUILayout.TextField(_textureName, GUILayout.Width(window.position.width * 0.66f));
 
         // Save location
@@ -60,8 +58,11 @@ public class MaskMapGenerator : EditorWindow
         Repaint();
     }
 
-    private static void TextureField(string label, ref Texture2D texture)
+    private static void DrawTextureField(string label, int textureIndex)
     {
+        Texture2D texture = _inputTextures[textureIndex];
+        float fallbackValue = _fallbackValues[textureIndex];
+
         GUILayout.BeginHorizontal();
         GUILayout.BeginVertical();
         GUILayout.FlexibleSpace();
@@ -69,12 +70,12 @@ public class MaskMapGenerator : EditorWindow
         if (texture == null)
         {
             GUILayout.FlexibleSpace();
-            value = EditorGUILayout.Slider(value, 0, 1);
+            _fallbackValues[textureIndex] = EditorGUILayout.Slider(fallbackValue, 0, 1);
         }
         GUILayout.FlexibleSpace();
         GUILayout.EndVertical();
 
-        texture = (Texture2D)EditorGUILayout.ObjectField(texture, typeof(Texture2D), false, GUILayout.Height(64), GUILayout.Width(64));
+        _inputTextures[textureIndex] = (Texture2D)EditorGUILayout.ObjectField(texture, typeof(Texture2D), false, GUILayout.Height(64), GUILayout.Width(64));
         GUILayout.EndHorizontal();
 
         GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(1));
