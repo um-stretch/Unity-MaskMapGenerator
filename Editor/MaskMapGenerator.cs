@@ -10,6 +10,7 @@ public class MaskMapGenerator : EditorWindow
     private static Texture2D[] _inputTextures = new Texture2D[4];
     private static float[] _fallbackValues = new float [4];
 
+    // Defaults
     private static string _textureName = "NewMaskMap";
     private static string _generationLocation = "Assets/";
 
@@ -35,7 +36,11 @@ public class MaskMapGenerator : EditorWindow
 
         // Name
         GUILayout.FlexibleSpace();
-        GUILayout.Label(new GUIContent("Name"), EditorStyles.boldLabel); 
+        GUILayout.BeginHorizontal();
+        GUILayout.Label(new GUIContent("Name"), EditorStyles.boldLabel);
+        GUILayout.FlexibleSpace();
+        GUILayout.Button("?", GUIStyle.none);
+        GUILayout.EndHorizontal();
         _textureName = EditorGUILayout.TextField(_textureName, GUILayout.Width(window.position.width * 0.66f));
 
         // Save location
@@ -49,8 +54,10 @@ public class MaskMapGenerator : EditorWindow
             {
                 _generationLocation = path;
             }
-        }        
+        }
         _generationLocation = EditorGUILayout.TextField(_generationLocation);
+
+        GUILayout.Button(new GUIContent("...", "Browse"), GUILayout.Width(24));
         GUILayout.EndHorizontal();
 
         GUILayout.Button(new GUIContent("Generate Mask Map", "Generate a mask map, saved at the above location."), GUILayout.Height(48));
@@ -65,7 +72,7 @@ public class MaskMapGenerator : EditorWindow
 
         GUILayout.BeginHorizontal();
         GUILayout.BeginVertical();
-        GUILayout.FlexibleSpace();
+        GUILayout.Space(8);
         GUILayout.Label(label, EditorStyles.boldLabel);
         if (texture == null)
         {
