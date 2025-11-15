@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using System.IO;
 
 public class MaskMapGenerator : EditorWindow
 {
@@ -12,7 +13,7 @@ public class MaskMapGenerator : EditorWindow
 
     // Defaults
     private static string _textureName = "NewMaskMap";
-    private static string _generationLocation = "Assets/";
+    private static string _saveLocation = "Assets/";
 
     [MenuItem("Tools/Mask Map Generator")]
     public static void OpenWindow()
@@ -39,30 +40,35 @@ public class MaskMapGenerator : EditorWindow
         GUILayout.BeginHorizontal();
         GUILayout.Label(new GUIContent("Name"), EditorStyles.boldLabel);
         GUILayout.FlexibleSpace();
-        GUILayout.Button("?", GUIStyle.none);
+        GUILayout.Button("?");
         GUILayout.EndHorizontal();
         _textureName = EditorGUILayout.TextField(_textureName, GUILayout.Width(window.position.width * 0.66f));
 
         // Save location
         GUILayout.Label(new GUIContent("Save Location", "Select a folder in the Project window, or browse for a save location."), EditorStyles.boldLabel);
         GUILayout.BeginHorizontal();
-        Object obj = Selection.activeObject;
-        if (Selection.objects.Length > 0 && obj != null)
-        {
-            string path = AssetDatabase.GetAssetPath(obj);
-            if(AssetDatabase.IsValidFolder(path))
-            {
-                _generationLocation = path;
-            }
-        }
-        _generationLocation = EditorGUILayout.TextField(_generationLocation);
 
-        GUILayout.Button(new GUIContent("...", "Browse"), GUILayout.Width(24));
+        _saveLocation = EditorGUILayout.TextField(_saveLocation);
+
+        if(GUILayout.Button(new GUIContent("...", "Browse"), GUILayout.Width(24)))
+        {
+            // string projectRoot = Directory.GetParent(Application.dataPath).FullName;
+            // string absolutePath = EditorUtility.OpenFolderPanel("Save Location", "Assets", "");
+            // projectRoot = projectRoot.Replace("\\", "/");
+
+            // absolutePath = absolutePath.Substring(projectRoot.Length + 1);
+
+            // if (absolutePath.StartsWith(projectRoot))
+            // _saveLocation = absolutePath;
+
+            // Debug.Log(absolutePath);
+            // Debug.Log(_saveLocation);
+
+            // Repaint();
+        }
         GUILayout.EndHorizontal();
 
-        GUILayout.Button(new GUIContent("Generate Mask Map", "Generate a mask map, saved at the above location."), GUILayout.Height(48));
-
-        Repaint();
+        GUILayout.Button(new GUIContent("Generate Mask Map", "Generate a mask map, saved at the above location."), GUILayout.Height(48));        
     }
 
     private static void DrawTextureField(string label, int textureIndex)
@@ -87,4 +93,57 @@ public class MaskMapGenerator : EditorWindow
 
         GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(1));
     }
+
+    // private void GenerateMaskMap(Texture2D metallicMap, Texture2D occlusionMap, Texture2D detailMap, Texture2D smoothnessMap)
+    // {
+    //     var firstNonNullRef = metallicMap ?? occlusionMap ?? detailMap ?? smoothnessMap;
+    //     if (firstNonNullRef == null)
+    //         return;
+
+    //     int resolution = firstNonNullRef.width;
+
+    //     Color[] mPixels = metallicMap != null ? metallicMap.GetPixels() : new Color[resolution * resolution];
+    //     Color[] oPixels = occlusionMap != null ? occlusionMap.GetPixels() : Enumerable.Repeat(Color.white, resolution * resolution).ToArray();
+    //     Color[] dPixels = detailMap != null ? detailMap.GetPixels() : Enumerable.Repeat(Color.white, resolution * resolution).ToArray();
+    //     Color[] sPixels = smoothnessMap != null ? smoothnessMap.GetPixels() : Enumerable.Repeat(Color.white, resolution * resolution).ToArray();
+
+    //     Texture2D maskMap = new Texture2D(resolution, resolution, TextureFormat.RGBA32, false);
+    //     Color[] maskPixels = new Color[resolution * resolution];
+
+    //     if (config.enableMultithreading)
+    //     {
+    //         System.Threading.Tasks.Parallel.For(0, resolution * resolution, i =>
+    //         {
+    //             float m = mPixels[i].grayscale;
+    //             float o = oPixels[i].grayscale;
+    //             float d = dPixels[i].grayscale;
+    //             float s = sPixels[i].grayscale;
+
+    //             maskPixels[i] = new Color(m, o, d, s);
+    //         });
+    //     }
+    //     else
+    //     {
+    //         for (int i = 0; i < resolution * resolution; i++)
+    //         {
+    //             float m = mPixels[i].grayscale;
+    //             float o = oPixels[i].grayscale;
+    //             float d = dPixels[i].grayscale;
+    //             float s = sPixels[i].grayscale;
+
+    //             maskPixels[i] = new Color(m, o, d, s);
+    //         }
+    //     }
+
+    //     maskMap.SetPixels(maskPixels);
+    //     maskMap.Apply();
+
+    //     byte[] maskMapBytes = maskMap.EncodeToPNG();
+    //     string path = $"{_destinationPath}/{_assetname}_MaskMap.png";
+    //     File.WriteAllBytes(path, maskMapBytes);
+    //     AssetDatabase.Refresh();
+
+    //     LogContext("Generate maskMap...OK");
+    // }
+
 }
