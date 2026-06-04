@@ -1,7 +1,7 @@
 {
-  "name": "com.maskmapgenerator",
+  "name": "com.umstretch.maskmapgenerator",
   "displayName": "Mask Map Generator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "unity": "6000.0",
   "description": "Mask map generator.",
   "author": {
