@@ -40,7 +40,7 @@ Install via Unity's package manager using the git url of this repo. Unity provid
 #### Click Generate Mask Map to create a mask map texture at the chosen save location.
 
 ## Config
-Config file can be found at `Packages/Mask Map Generator/Edior/Config.cs`
+Config file can be found at `Packages/Mask Map Generator/Editor/Config.cs`
 ```cs
 public static readonly int defaultResolution = 1024;        // Default resolution when no input textures are used.
 public static readonly bool useMultithreading = true;       // Whether multithreading should be used when generating textures.
