@@ -139,7 +139,6 @@ namespace UmStretch.MaskMapGenerator
 
         private static void GenerateMaskMap()
         {
-            double sTime = EditorApplication.timeSinceStartup;
             Texture2D firstNonNullRef = _inputTextures[0] ?? _inputTextures[1] ?? _inputTextures[2] ?? _inputTextures[3];
             _resolution = firstNonNullRef == null ? Config.defaultResolution : firstNonNullRef.width;
 
@@ -183,8 +182,6 @@ namespace UmStretch.MaskMapGenerator
             string path = $"{_saveLocation}/{_textureName}.png";
             File.WriteAllBytes(path, maskMapBytes);
             AssetDatabase.Refresh();
-
-            Debug.Log(EditorApplication.timeSinceStartup - sTime);
         }
 
         // Use input texture if available, otherwise use fallback value to create greyscale texture.
