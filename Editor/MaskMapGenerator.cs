@@ -8,7 +8,7 @@ namespace UmStretch.MaskMapGenerator
 {
     public class MaskMapGenerator : EditorWindow
     {
-        private static MaskMapGenerator window;
+        private static MaskMapGenerator _window;
         private static Vector2 _minWindowSize = new Vector2(315, 420);
 
         // Metallic, AO, Detail, Smoothness
@@ -19,19 +19,19 @@ namespace UmStretch.MaskMapGenerator
         private static string _saveLocation = "Assets/";
         private static int _resolution = 1024;
 
-        [MenuItem("Tools/Mask Map Generator")]
+        [MenuItem("Tools/um-stretch/Mask Map Generator")]
         public static void OpenWindow()
         {
-            window = GetWindow<MaskMapGenerator>("Mask Map Generator");
+            _window = GetWindow<MaskMapGenerator>("Mask Map Generator");
 
-            window.minSize = _minWindowSize;
-            window.maxSize = _minWindowSize;
-            window.maxSize = Vector3.one * 10000;
+            _window.minSize = _minWindowSize;
+            _window.maxSize = _minWindowSize;
+            _window.maxSize = Vector2.one * 10000;
         }
 
         void OnGUI()
         {
-            window ??= GetWindow<MaskMapGenerator>("Mask Map Generator");
+            _window ??= GetWindow<MaskMapGenerator>("Mask Map Generator");
 
             // Textures
             DrawTextureField("Metallic", 0);
@@ -52,7 +52,7 @@ namespace UmStretch.MaskMapGenerator
             }
             GUILayout.EndHorizontal();
 
-            _textureName = EditorGUILayout.TextField(_textureName, GUILayout.Width(window.position.width * 0.66f));
+            _textureName = EditorGUILayout.TextField(_textureName, GUILayout.Width(_window.position.width * 0.66f));
 
             // Save location
             GUILayout.Label(new GUIContent("Save Location"), EditorStyles.boldLabel);
