@@ -16,10 +16,10 @@ namespace UmStretch.MaskMapGenerator
         private static float[] _fallbackValues = new float[4];
 
         private static string _textureName = "NewMaskMap";
-        private static string _saveLocation = "Assets/";
+        private static string _saveLocation = Config.defaultSaveLocation;
         private static int _resolution = 1024;
 
-        [MenuItem("Tools/Mask Map Generator")]
+        [MenuItem("Tools/um-stretch/Mask Map Generator")]
         public static void OpenWindow()
         {
             window = GetWindow<MaskMapGenerator>("Mask Map Generator");
