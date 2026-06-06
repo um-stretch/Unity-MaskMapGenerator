@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEditor;
-using UmStretch.MaskMapGenerator;
 
-namespace UmStretch.MaskMapSeparator
+namespace UmStretch.MaskMap
 {
     public class MaskMapSeparator : EditorWindow
     {
@@ -34,12 +33,19 @@ namespace UmStretch.MaskMapSeparator
             DrawInputTexture();
             if (_inputTexture != _prevInputTexture)
             {
+                _inputTexture = Utilities.MakeReadable(_inputTexture);
                 RefreshOutputTextures();
                 _prevInputTexture = _inputTexture;
             }
 
             GUILayout.Space(40);
-            DrawOutputTextures();
+
+            GUILayout.BeginHorizontal();
+            DrawOutputTexture("Metallic", _outputTextures[0]);
+            DrawOutputTexture("Occlusion", _outputTextures[1]);
+            DrawOutputTexture("Detail", _outputTextures[2]);
+            DrawOutputTexture("Smoothness", _outputTextures[3]);
+            GUILayout.EndHorizontal();
         }
 
         private void DrawInputTexture()
@@ -108,20 +114,14 @@ namespace UmStretch.MaskMapSeparator
             return new Color(value, value, value, 1f);
         }
 
-        private void DrawOutputTextures()
+        private void DrawOutputTexture(string label, Texture2D texture)
         {
-            GUILayout.BeginHorizontal();
-            for (int i = 0; i < 4; i++)
-            {
-                Texture2D tex = _outputTextures[i];
-                if (tex == null)
-                    continue;
-
-                GUILayout.FlexibleSpace();
-                EditorGUILayout.ObjectField(tex, typeof(Texture2D), false, GUILayout.Height(64), GUILayout.Width(64));
-                GUILayout.FlexibleSpace();
-            }
-            GUILayout.EndHorizontal();
+            GUILayout.FlexibleSpace();
+            GUILayout.BeginVertical();
+            GUILayout.Label(label, EditorStyles.centeredGreyMiniLabel);
+            EditorGUILayout.ObjectField(texture, typeof(Texture2D), false, GUILayout.Height(64), GUILayout.Width(64));
+            GUILayout.EndVertical();
+            GUILayout.FlexibleSpace();
         }
     }
 }

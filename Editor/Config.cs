@@ -1,6 +1,4 @@
-using UnityEngine;
-
-namespace UmStretch.MaskMapGenerator
+namespace UmStretch.MaskMap
 {
     public static class Config
     {

@@ -4,7 +4,7 @@ using System.IO;
 using System;
 using System.Linq;
 
-namespace UmStretch.MaskMapGenerator
+namespace UmStretch.MaskMap
 {
     public class MaskMapGenerator : EditorWindow
     {
@@ -82,7 +82,8 @@ namespace UmStretch.MaskMapGenerator
             // Generate mask map
             if (GUILayout.Button(new GUIContent("Generate Mask Map", "Generate a mask map, saved at the above location."), GUILayout.Height(48)))
             {
-                VerifyInputTextures();
+                foreach(Texture2D tex in _inputTextures)
+                    Utilities.MakeReadable(tex);
 
                 GenerateMaskMap();
             }
@@ -110,31 +111,6 @@ namespace UmStretch.MaskMapGenerator
             GUILayout.EndHorizontal();
 
             GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(1));
-        }
-
-        // Ensure input textures are readable.
-        private static void VerifyInputTextures()
-        {
-            for (int i = 0; i < _inputTextures.Length; i++)
-            {
-                Texture2D tex = _inputTextures[i];
-                if (tex == null)
-                    continue;
-
-                string texPath = AssetDatabase.GetAssetPath(tex);
-                if (string.IsNullOrEmpty(texPath))
-                    continue;
-
-                var importer = AssetImporter.GetAtPath(texPath) as TextureImporter;
-                if (importer == null)
-                    continue;
-
-                if (!importer.isReadable)
-                {
-                    importer.isReadable = true;
-                    AssetDatabase.ImportAsset(texPath, ImportAssetOptions.ForceUpdate);
-                }
-            }
         }
 
         private static void GenerateMaskMap()
