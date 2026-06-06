@@ -1,10 +1,9 @@
 using UnityEngine;
 using UnityEditor;
 using System.IO;
-using System;
 using System.Linq;
 
-namespace UmStretch.MaskMapGenerator
+namespace UmStretch.MaskMap
 {
     public class MaskMapGenerator : EditorWindow
     {
@@ -16,7 +15,7 @@ namespace UmStretch.MaskMapGenerator
         private static float[] _fallbackValues = new float[4];
 
         private static string _textureName = "NewMaskMap";
-        private static string _saveLocation = "Assets/";
+        private static string _saveLocation = Config.defaultSaveLocation;
         private static int _resolution = 1024;
 
         [MenuItem("Tools/um-stretch/Mask Map Generator")]
@@ -67,14 +66,14 @@ namespace UmStretch.MaskMapGenerator
 
                 string absolutePath = EditorUtility.OpenFolderPanel("Save Location", "Assets", "");
 
-                if (!String.IsNullOrEmpty(absolutePath) && absolutePath.StartsWith(projectRoot))
+                if (!string.IsNullOrEmpty(absolutePath) && absolutePath.StartsWith(projectRoot))
                 {
                     string savePath = absolutePath.Substring(projectRoot.Length + 1);
                     _saveLocation = savePath;
                 }
                 else
                 {
-                    _saveLocation = "Assets/";
+                    _saveLocation = Config.defaultSaveLocation;
                 }
             }
             GUILayout.EndHorizontal();
@@ -82,7 +81,8 @@ namespace UmStretch.MaskMapGenerator
             // Generate mask map
             if (GUILayout.Button(new GUIContent("Generate Mask Map", "Generate a mask map, saved at the above location."), GUILayout.Height(48)))
             {
-                VerifyInputTextures();
+                foreach(Texture2D tex in _inputTextures)
+                    Utilities.MakeReadable(tex);
 
                 GenerateMaskMap();
             }
@@ -110,31 +110,6 @@ namespace UmStretch.MaskMapGenerator
             GUILayout.EndHorizontal();
 
             GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(1));
-        }
-
-        // Ensure input textures are readable.
-        private static void VerifyInputTextures()
-        {
-            for (int i = 0; i < _inputTextures.Length; i++)
-            {
-                Texture2D tex = _inputTextures[i];
-                if (tex == null)
-                    continue;
-
-                string texPath = AssetDatabase.GetAssetPath(tex);
-                if (string.IsNullOrEmpty(texPath))
-                    continue;
-
-                var importer = AssetImporter.GetAtPath(texPath) as TextureImporter;
-                if (importer == null)
-                    continue;
-
-                if (!importer.isReadable)
-                {
-                    importer.isReadable = true;
-                    AssetDatabase.ImportAsset(texPath, ImportAssetOptions.ForceUpdate);
-                }
-            }
         }
 
         private static void GenerateMaskMap()
@@ -178,10 +153,7 @@ namespace UmStretch.MaskMapGenerator
             maskMap.SetPixels(maskPixels);
             maskMap.Apply();
 
-            byte[] maskMapBytes = maskMap.EncodeToPNG();
-            string path = $"{_saveLocation}/{_textureName}.png";
-            File.WriteAllBytes(path, maskMapBytes);
-            AssetDatabase.Refresh();
+            Utilities.SaveToPng(maskMap, _saveLocation, _textureName);
         }
 
         // Use input texture if available, otherwise use fallback value to create greyscale texture.
