@@ -75,7 +75,7 @@ namespace UmStretch.MaskMap
             _outputName = GUILayout.TextField(_outputName, GUILayout.Width(_window.position.width * 0.66f));
 
             // Save location
-            GUILayout.Label(new GUIContent("Save Location"), EditorStyles.boldLabel);
+            GUILayout.Label(new GUIContent(new GUIContent("Save Location", "Location where new folder will be created, and textures will be saved.")), EditorStyles.boldLabel);
             GUILayout.BeginHorizontal();
 
             _saveLocation = EditorGUILayout.TextField(_saveLocation);
@@ -110,7 +110,7 @@ namespace UmStretch.MaskMap
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
             GUILayout.BeginVertical();
-            GUILayout.Label("Input Texture", EditorStyles.whiteBoldLabel);
+            GUILayout.Label(new GUIContent("Input Texture", "Mask map input"), EditorStyles.whiteBoldLabel);
             _inputTexture = (Texture2D)EditorGUILayout.ObjectField(_inputTexture, typeof(Texture2D), false, GUILayout.Height(96), GUILayout.Width(96));
             _inputRect = GUILayoutUtility.GetLastRect();
             GUILayout.EndVertical();
