@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEditor;
 using System.IO;
-using System;
 using System.Linq;
 
 namespace UmStretch.MaskMap
@@ -67,14 +66,14 @@ namespace UmStretch.MaskMap
 
                 string absolutePath = EditorUtility.OpenFolderPanel("Save Location", "Assets", "");
 
-                if (!String.IsNullOrEmpty(absolutePath) && absolutePath.StartsWith(projectRoot))
+                if (!string.IsNullOrEmpty(absolutePath) && absolutePath.StartsWith(projectRoot))
                 {
                     string savePath = absolutePath.Substring(projectRoot.Length + 1);
                     _saveLocation = savePath;
                 }
                 else
                 {
-                    _saveLocation = "Assets/";
+                    _saveLocation = Config.defaultSaveLocation;
                 }
             }
             GUILayout.EndHorizontal();
@@ -154,10 +153,7 @@ namespace UmStretch.MaskMap
             maskMap.SetPixels(maskPixels);
             maskMap.Apply();
 
-            byte[] maskMapBytes = maskMap.EncodeToPNG();
-            string path = $"{_saveLocation}/{_textureName}.png";
-            File.WriteAllBytes(path, maskMapBytes);
-            AssetDatabase.Refresh();
+            Utilities.SaveToPng(maskMap, _saveLocation, _textureName);
         }
 
         // Use input texture if available, otherwise use fallback value to create greyscale texture.

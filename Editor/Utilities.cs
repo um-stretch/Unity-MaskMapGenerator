@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using System.IO;
 
 namespace UmStretch.MaskMap
 {
@@ -10,7 +11,6 @@ namespace UmStretch.MaskMap
         {
             if (texture == null)
             {
-                Debug.LogWarning("Input texture is null.");
                 return null;
             }
 
@@ -35,6 +35,16 @@ namespace UmStretch.MaskMap
             }
 
             return texture;
+        }
+
+        public static void SaveToPng(Texture2D texture, string saveLocation, string name)
+        {
+            name = name.Replace(".png", "");
+
+            byte[] texBytes = texture.EncodeToPNG();
+            string path = Path.Combine(saveLocation, name + ".png");
+            File.WriteAllBytes(path, texBytes);
+            AssetDatabase.Refresh();
         }
     }
 }
